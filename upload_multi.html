@@ -1,0 +1,41 @@
+<html>
+  <head></head>
+  <body>
+    <h2>Send this file to server (Max size 1M)</h2>
+    <form method="post" enctype="multipart/form-data">
+      Files to upload
+      <input
+        type="file"
+        onchange="upload()"
+        id="fid"
+        multiple
+        name="myfile[]"
+      /><br />
+    </form>
+    <div id="disp"></div>
+
+    <script>
+      function upload() {
+        var formdata = new FormData();
+        var size = 0;
+        var file = document.getElementById("fid").files;
+        for (var i = 0; i < file.length; i++) {
+          size += file[i].size;
+          formdata.append("myfile[]", file[i]);
+        }
+        var x = new XMLHttpRequest();
+        x.onreadystatechange = function () {
+          if (x.readyState == 4 && (x.status = 200))
+            document.getElementById("disp").innerHTML = x.responseText;
+        };
+
+        if (size < 1024*1024) {
+          x.open("POST", "uploadmulti.php");
+          x.send(formdata);
+        } else {
+          alert("post data size exceeded");
+        }
+      }
+    </script>
+  </body>
+</html>
